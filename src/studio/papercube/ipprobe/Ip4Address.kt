@@ -57,4 +57,8 @@ class Ip4Address(address: IntArray) {
     override fun hashCode(): Int {
         return Arrays.hashCode(address)
     }
+
+    operator fun rangeTo(end: Ip4Address): Ip4AddressRange {
+        return Ip4AddressRange(this, end)
+    }
 }

@@ -22,13 +22,45 @@ object NetworkConnectivity {
      * @throws IllegalArgumentException if argument count is zero
      */
     fun test(vararg networkAddresses: String): Int {
-        networkAddresses.map {
-            //            CompletableFuture.supplyAsync({
+//        networkAddresses.map {
+//                        CompletableFuture.supplyAsync({
 //
 //            }, networkTesterExecutor)
+//        }
+//
+//        return 0
+        TODO("Unimplemented. Use testSingleAddress(String) instead")
+    }
+
+    /**
+     * Test one address repeatedly. This is especially useful when an ip change takes some time to come into effect.
+     *
+     * @param networkAddress the network address to test
+     * @param interval interval between two retries, in millis
+     * @param repeatCount after how many failures should this method return
+     *
+     * @return a boolean, true if connection is available, false otherwise
+     *
+     * @see [testSingleAddress]
+     */
+    fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int): Boolean {
+        for (i in 1..repeatCount) {
+            try {
+                if (testSingleAddress(networkAddress)) {
+                    return true
+                }
+            } catch (e: Exception) {
+                //ignore
+            }
+
+            try {
+                Thread.sleep(interval)
+            } catch (e: InterruptedException) {
+                //ignore
+            }
         }
 
-        return 0
+        return false
     }
 
     private fun testSingleAddress(networkAddress: String): Boolean {

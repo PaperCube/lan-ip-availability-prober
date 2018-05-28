@@ -10,8 +10,11 @@ fun main(args: Array<String>) {
 
         val connectionName = args[0]
         val ipString = args[1]
+        val ipEndString = args.getOrNull(2)
 
-        for (ip in Ip4AddressRange.of(ipString)) {
+        val ipRange = Ip4Address.parseMin(ipString)..Ip4Address.parseMax(ipEndString ?: ipString)
+
+        for (ip in ipRange) {
             println()
 
             print("Testing $ip ")

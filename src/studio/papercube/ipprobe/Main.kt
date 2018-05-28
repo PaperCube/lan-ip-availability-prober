@@ -12,21 +12,23 @@ fun main(args: Array<String>) {
         val ipString = args[1]
 
         for (ip in Ip4AddressRange.of(ipString)) {
-            println("Setting ip to $ip")
+            println()
+
+            print("Testing $ip ")
             try {
                 val configurator = SystemNetworkConfigurator(connectionName, ip)
                 val exitCode = configurator.apply()
                 if (exitCode != 0) {
-                    println("Unable to set ip $ip. Do you have Administrators' privilege?")
+                    print("Unable to set ip $ip. Do you have Administrators' privilege?")
                 }
             } catch (e: Exception) {
-                println("Unexpected exception raised: $e")
+                print("Unexpected exception raised: $e")
             }
 
-            if (NetworkConnectivity.testSingleRepeatedly("http://g.cn", 500, 10)) {
-                println("SUCCESS: connected to internet successfully with config $ip")
+            if (NetworkConnectivity.testSingleRepeatedly("http://g.cn", 1000, 20) { "." }) {
+                print("  SUCCESS: $ip")
                 availableConfigs.add(ip)
-            } else println("Failed.")
+            } else print("Connection failed.")
         }
 
 
@@ -34,7 +36,10 @@ fun main(args: Array<String>) {
         System.err.println("FATAL: $e")
     }
 
+    println()
     println("${availableConfigs.size} configs were found available")
+    availableConfigs.forEach(::println)
+
 }
 
 fun printCommandLineHelp() {

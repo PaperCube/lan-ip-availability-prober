@@ -44,14 +44,14 @@ object NetworkConnectivity {
      *
      * @see [testSingleAddress]
      */
-    fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int): Boolean {
+    fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int, onRetry: ((Int)->String)? = null): Boolean {
         for (i in 1..repeatCount) {
             try {
                 if (testSingleAddress(networkAddress)) {
                     return true
                 }
             } catch (e: Exception) {
-                //ignore
+                onRetry?.invoke(i)
             }
 
             try {

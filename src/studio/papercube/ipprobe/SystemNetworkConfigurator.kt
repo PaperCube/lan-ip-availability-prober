@@ -7,12 +7,14 @@ class SystemNetworkConfigurator(var connectionName: String,
     private var process: Process? = null
 
     fun apply(): Int {
-        val commandArgs = "netsh interface ipv4 set address $connectionName static $ip $netmask ${gateway()} 1"
-        val configuratorProcess = Runtime.getRuntime().exec(commandArgs)
+        val configuratorProcess = Runtime.getRuntime().exec(command)
         process = configuratorProcess
         configuratorProcess.waitFor()
         return configuratorProcess.exitValue()
     }
+
+    val command:String
+        get() = "netsh interface ipv4 set address $connectionName static $ip $netmask ${gateway()} 1"
 
     private fun gateway(): Ip4Address {
         return gateway ?: inferGateway(ip)

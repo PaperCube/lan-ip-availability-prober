@@ -4,7 +4,7 @@ class Ip4AddressIterator(private val from: Ip4Address, private val to: Ip4Addres
     private var current = from
 
     override fun hasNext(): Boolean {
-        return current == to
+        return current != to
     }
 
     override fun next(): Ip4Address {

@@ -24,9 +24,10 @@ class Ip4Address(address: IntArray) {
                 break
             }
 
-            if (increment > 0) {
-                return Ip4Address(0, 0, 0, 0) + (increment - 1)
-            }
+        }
+
+        if (increment > 0) {
+            return Ip4Address(0, 0, 0, 0) + (increment - 1)
         }
 
         return newAddress

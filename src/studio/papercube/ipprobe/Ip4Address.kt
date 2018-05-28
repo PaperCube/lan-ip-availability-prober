@@ -61,4 +61,8 @@ class Ip4Address(address: IntArray) {
     operator fun rangeTo(end: Ip4Address): Ip4AddressRange {
         return Ip4AddressRange(this, end)
     }
+
+    operator fun get(index: Int): Int {
+        return this.address[index]
+    }
 }

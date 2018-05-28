@@ -13,7 +13,11 @@ object IpParser {
      * @return an [Ip4Address] corresponding to input
      */
     fun parseMin(ip: String): Ip4Address {
-        val parts = ip.split('.').toIntArray()
+        val parts = try {
+            ip.split('.').toIntArray()
+        } catch (e: NumberFormatException) {
+            throw IllegalArgumentException("$ip is not a valid ip")
+        }
         val size = parts.size
         return Ip4Address(parts)
     }

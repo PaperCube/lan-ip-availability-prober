@@ -29,11 +29,12 @@ object NetworkConnectivity {
 //        }
 //
 //        return 0
-        TODO("Unimplemented. Use testSingleAddress(String) instead")
+        throw NotImplementedError("Unimplemented. Use testSingleAddress(String) instead")
     }
 
     /**
      * Test one address repeatedly. This is especially useful when an ip change takes some time to come into effect.
+     * Normally, this method never throws
      *
      * @param networkAddress the network address to test
      * @param interval interval between two retries, in millis

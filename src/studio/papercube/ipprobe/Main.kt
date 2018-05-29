@@ -53,7 +53,7 @@ fun main(args: Array<String>) {
 fun printCommandLineHelp() {
     val commandLineHelp = """
         |usage:
-        |... <connection-name> <ipv4>
+        |... <connection-name> <ipv4> [ipv4-end]
         """.trimMargin()
 
     println(commandLineHelp)

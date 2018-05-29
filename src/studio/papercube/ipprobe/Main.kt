@@ -1,7 +1,7 @@
 package studio.papercube.ipprobe
 
 fun main(args: Array<String>) {
-    var availableConfigs: MutableList<Ip4Address> = ArrayList()
+    val availableConfigs: MutableList<Ip4Address> = ArrayList()
     try {
         if (args.size < 2) {
             printCommandLineHelp()
@@ -28,7 +28,12 @@ fun main(args: Array<String>) {
                 print("Unexpected exception raised: $e")
             }
 
-            if (NetworkConnectivity.testSingleRepeatedly("http://g.cn", 1000, 20) { "." }) {
+            if (
+                    NetworkConnectivity.testSingleRepeatedly(
+                            "http://g.cn",
+                            1000,
+                            20) { print('.') }
+            ) {
                 print("  SUCCESS: $ip")
                 availableConfigs.add(ip)
             } else print("Connection failed.")

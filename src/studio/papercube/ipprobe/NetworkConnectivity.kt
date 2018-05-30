@@ -48,13 +48,8 @@ object NetworkConnectivity {
      */
     fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int, onRetry: ((Int)->Unit)? = null): Boolean {
         for (i in 1..repeatCount) {
-            onRetry?.invoke(i)
-            try {
-                if (testSingleAddress(networkAddress)) {
-                    return true
-                }
-            } catch (e: Exception) {
-                //ignore
+            if (testSingleAddress(networkAddress)) {
+                return true
             }
 
             try {
@@ -62,6 +57,7 @@ object NetworkConnectivity {
             } catch (e: InterruptedException) {
                 //ignore
             }
+            onRetry?.invoke(i)
         }
 
         return false

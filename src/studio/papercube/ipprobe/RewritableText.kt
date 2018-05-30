@@ -1,9 +1,8 @@
 package studio.papercube.ipprobe
 
-import java.io.OutputStream
 import java.io.PrintStream
 
-open class RewritableText(private val outputStream: PrintStream = System.out){
+open class RewritableText(private val outputStream: PrintStream = System.out) {
     private var lastLength = 0
 
     open fun write(string: String) {
@@ -14,8 +13,13 @@ open class RewritableText(private val outputStream: PrintStream = System.out){
         outputStream.print(string)
 
         if (string.length < lastLength) {
-            for (i in 0 until lastLength - string.length) {
+            val cleanCnt = lastLength - string.length
+            for (i in 0 until cleanCnt) {
                 outputStream.print(" ")
+            }
+
+            for (i in 0 until cleanCnt) {
+                outputStream.print('\b')
             }
         }
 

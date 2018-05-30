@@ -30,7 +30,7 @@ fun main(args: Array<String>) {
 
             if (
                     NetworkConnectivity.testSingleRepeatedly(
-                            "http://g.cn",
+                            "g.cn",
                             1000,
                             20) { print('.') }
             ) {

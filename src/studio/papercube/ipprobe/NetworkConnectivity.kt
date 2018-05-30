@@ -1,8 +1,10 @@
 package studio.papercube.ipprobe
 
 import java.io.IOException
+import java.net.InetAddress
 import java.net.MalformedURLException
 import java.net.URI
+import java.net.UnknownHostException
 import java.util.concurrent.Executors
 import java.util.concurrent.ThreadFactory
 
@@ -67,14 +69,11 @@ object NetworkConnectivity {
 
     private fun testSingleAddress(networkAddress: String): Boolean {
         return try {
-            val uri = URI(networkAddress)
-            val conn = uri.toURL().openConnection()
-            conn.connectTimeout = 10000
-            conn.getInputStream().read()
-            true
+            val inetAddress = InetAddress.getByName(networkAddress)
+            inetAddress.isReachable(5000)
         } catch (e: MalformedURLException) {
             throw e
-        } catch (e: IOException) {
+        }  catch (e: IOException) {
             false
         }
     }

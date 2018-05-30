@@ -18,11 +18,15 @@ fun main(args: Array<String>) {
             println()
 
             print("Testing $ip ")
+
+            val textStatus = RewritableText()
+
             try {
                 val configurator = SystemNetworkConfigurator(connectionName, ip)
                 val exitCode = configurator.apply()
                 if (exitCode != 0) {
-                    print("Unable to set ip $ip. Do you have Administrators' privilege?")
+                    textStatus.write("Unable to set ip $ip. Do you have Administrators' privilege?")
+                    continue
                 }
             } catch (e: Exception) {
                 print("Unexpected exception raised: $e")
@@ -30,13 +34,15 @@ fun main(args: Array<String>) {
 
             if (
                     NetworkConnectivity.testSingleRepeatedly(
-                            "http://g.cn",
+                            "g.cn",
                             1000,
-                            20) { print('.') }
+                            20) { retryCnt->
+                        textStatus.write("Retrying... [$retryCnt]")
+                    }
             ) {
-                print("  SUCCESS: $ip")
+                textStatus.write("SUCCESS: $ip")
                 availableConfigs.add(ip)
-            } else print("Connection failed.")
+            } else textStatus.write("Connection failed.")
         }
 
 

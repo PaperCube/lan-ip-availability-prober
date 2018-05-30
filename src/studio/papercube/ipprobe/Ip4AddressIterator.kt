@@ -1,21 +1,19 @@
 package studio.papercube.ipprobe
 
 class Ip4AddressIterator(private val from: Ip4Address, private val to: Ip4Address) : Iterator<Ip4Address> {
-    private var current = from
-    private var firstElementConsumed = false
+    private var next = from
 
     override fun hasNext(): Boolean {
-        return current < to
+        return next <= to
     }
 
     override fun next(): Ip4Address {
         try {
             if (hasNext()) {
-                if (firstElementConsumed) current += 1
-                return current
+                return next
             } else throw NoSuchElementException()
         } finally {
-            firstElementConsumed = true
+            next += 1
         }
     }
 }

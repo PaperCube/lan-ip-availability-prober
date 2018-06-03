@@ -29,6 +29,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../libPaperCube-JavaSE/ArgParser/ArgParser.iml" filepath="$PROJECT_DIR$/../libPaperCube-JavaSE/ArgParser/ArgParser.iml" />
       <module fileurl="file://$PROJECT_DIR$/StaticIpProbe.iml" filepath="$PROJECT_DIR$/StaticIpProbe.iml" />
     </modules>
   </component>

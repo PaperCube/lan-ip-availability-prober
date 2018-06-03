@@ -1,17 +1,22 @@
 package studio.papercube.ipprobe
 
+import studio.papercube.library.argparser.Parameter
+
 fun main(args: Array<String>) {
     val availableConfigs: MutableList<Ip4Address> = ArrayList()
     try {
-        if (args.size < 2) {
+        val parameter = Parameter.resolve(args)
+        val argUnnamed = parameter.getUnnamedArg()
+        if (argUnnamed == null || args.size < 2) {
             printCommandLineHelp()
             return
         }
 
-        val connectionName = args[0]
-        val ipString = args[1]
-        val ipEndString = args.getOrNull(2)
+        val connectionName = argUnnamed[0]
+        val ipString = argUnnamed[1]
+        val ipEndString = argUnnamed.getOrNull(2)
 
+        val testHostName = parameter.getSingleValue("--test-host-name") ?: "g.cn"
         val ipRange = Ip4Address.parseMin(ipString)..Ip4Address.parseMax(ipEndString ?: ipString)
 
         for (ip in ipRange) {
@@ -34,9 +39,9 @@ fun main(args: Array<String>) {
 
             if (
                     NetworkConnectivity.testSingleRepeatedly(
-                            "g.cn",
+                            testHostName,
                             1000,
-                            20) { retryCnt->
+                            20) { retryCnt ->
                         textStatus.write("Retrying... [$retryCnt]")
                     }
             ) {
@@ -59,7 +64,9 @@ fun main(args: Array<String>) {
 fun printCommandLineHelp() {
     val commandLineHelp = """
         |usage:
-        |... <connection-name> <ipv4> [ipv4-end]
+        |... <connection-name> <ipv4> [ipv4-end] [options]
+        |
+        |   --test-host-name <host-name> the host name to test network connectivity against
         """.trimMargin()
 
     println(commandLineHelp)

@@ -15,8 +15,14 @@ fun main(args: Array<String>) {
         val connectionName = argUnnamed[0]
         val ipString = argUnnamed[1]
         val ipEndString = argUnnamed.getOrNull(2)
+        val timeOutArg = parameter.getSingleValue("--timeout") ?: "20"
 
         val testHostName = parameter.getSingleValue("--test-host-name") ?: "g.cn"
+        val timeOutSeconds: Long = timeOutArg.toLongOrNull() ?: kotlin.run {
+            println("Invalid value for --timeout. Setting to default value 20")
+            20L
+        }
+
         val ipRange = Ip4Address.parseMin(ipString)..Ip4Address.parseMax(ipEndString ?: ipString)
 
         for (ip in ipRange) {
@@ -37,15 +43,18 @@ fun main(args: Array<String>) {
                 print("Unexpected exception raised: $e")
             }
 
-            if (
-                    NetworkConnectivity.testSingleRepeatedly(
-                            testHostName,
-                            1000,
-                            20) { retryCnt ->
-                        textStatus.write("Retrying... [$retryCnt]")
-                    }
-            ) {
-                textStatus.write("SUCCESS: $ip")
+            val connectivityTester = NetworkConnectivityTester(testHostName, timeOutSeconds * 1000)
+            var elapsedSeconds = 0
+
+            connectivityTester.start()
+
+            while (!connectivityTester.isDone()) {
+                textStatus.write("Checking network connectivity (${elapsedSeconds++}s/${timeOutSeconds}s)")
+                connectivityTester.waitFor(1000)
+            }
+
+            if (connectivityTester.get()) {
+                textStatus.write("Passed.")
                 availableConfigs.add(ip)
             } else textStatus.write("Connection failed.")
         }
@@ -66,7 +75,9 @@ fun printCommandLineHelp() {
         |usage:
         |... <connection-name> <ipv4> [ipv4-end] [options]
         |
-        |   --test-host-name <host-name> the host name to test network connectivity against
+        |Options:
+        |   --test-host-name <host-name>    the host name to test network connectivity against
+        |   --timeout <seconds>             how long this test should be regarded invalid if network check fails
         """.trimMargin()
 
     println(commandLineHelp)

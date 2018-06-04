@@ -3,19 +3,17 @@ package studio.papercube.ipprobe
 import java.io.IOException
 import java.net.InetAddress
 import java.net.MalformedURLException
-import java.net.URI
-import java.net.UnknownHostException
 import java.util.concurrent.Executors
-import java.util.concurrent.ThreadFactory
 
 object NetworkConnectivity {
     @Volatile
     private var networkTesterCounter = 0
-    private val networkTesterExecutor = Executors.newCachedThreadPool(ThreadFactory {
+    private val networkTesterExecutor = Executors.newCachedThreadPool({
         Thread(it).apply {
             name = "Network Tester Thread - ${++networkTesterCounter}"
         }
     })
+
 
     /**
      * Test given whether network addresses are accessible
@@ -23,6 +21,7 @@ object NetworkConnectivity {
      * @return amount of addresses that are accessible
      * @throws IllegalArgumentException if argument count is zero
      */
+    @Suppress("UNUSED_PARAMETER")
     fun test(vararg networkAddresses: String): Int {
 //        networkAddresses.map {
 //                        CompletableFuture.supplyAsync({
@@ -46,7 +45,7 @@ object NetworkConnectivity {
      *
      * @see [testSingleAddress]
      */
-    fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int, onRetry: ((Int)->Unit)? = null): Boolean {
+    fun testSingleRepeatedly(networkAddress: String, interval: Long, repeatCount: Int, onRetry: ((Int) -> Unit)? = null): Boolean {
         for (i in 1..repeatCount) {
             if (testSingleAddress(networkAddress)) {
                 return true
@@ -63,13 +62,13 @@ object NetworkConnectivity {
         return false
     }
 
-    private fun testSingleAddress(networkAddress: String): Boolean {
+    fun testSingleAddress(networkAddress: String): Boolean {
         return try {
             val inetAddress = InetAddress.getByName(networkAddress)
             inetAddress.isReachable(5000)
         } catch (e: MalformedURLException) {
             throw e
-        }  catch (e: IOException) {
+        } catch (e: IOException) {
             false
         }
     }
